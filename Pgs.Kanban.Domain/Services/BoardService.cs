@@ -17,7 +17,7 @@ namespace Pgs.Kanban.Domain.Services
 
         public BoardDto GetBoard()
         {
-            var board = _context.Boards.Include(b => b.Lists).FirstOrDefault();
+            var board = _context.Boards.Include(b => b.Lists).LastOrDefault();
 
             if (board == null)
             {
