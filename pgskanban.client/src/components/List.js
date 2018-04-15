@@ -29,14 +29,24 @@ export default class List extends React.Component {
             console.log(error);
         });
     }
-    
+
+    deleteList = () => {
+        axios.delete(BASE_URL + '/list', {data: {listId: this.props.listId, boardId: this.props.boardId}} )
+        .then(() => {
+            console.log("Successfully deleted list!");
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+     
     render() {
         return (
             <div className="col-3">
             <div className="row">
                 <input value={this.state.name} onChange={this.onListNameChange} className="form-control col-8"/>
                 <button onClick={this.saveListName} className="btn btn-success col-2">Edit</button>
-                <button className="btn badge-danger col-2 btn-block">X</button>
+                <button onClick={this.deleteList} className="btn badge-danger col-2 btn-block">X</button>
             </div>
                 <div className="card card-block">
                     {this.renderCards()}

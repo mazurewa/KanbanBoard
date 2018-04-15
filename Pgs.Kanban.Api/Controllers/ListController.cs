@@ -48,5 +48,22 @@ namespace Pgs.Kanban.Api.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete]
+        public IActionResult DeleteList([FromBody] DeleteListNameDto deleteListNameDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = _listService.DeleteListName(deleteListNameDto);
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
+        }
     }
 }
