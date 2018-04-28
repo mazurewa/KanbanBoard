@@ -50,7 +50,7 @@ namespace Pgs.Kanban.Api.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteList([FromBody] DeleteListNameDto deleteListNameDto)
+        public IActionResult DeleteList([FromBody] DeleteListDto deleteListNameDto)
         {
             if (!ModelState.IsValid)
             {
@@ -65,5 +65,22 @@ namespace Pgs.Kanban.Api.Controllers
 
             return NoContent();
         }
+
+        //[HttpDelete]
+        //public IActionResult DeleteList(int cardId)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    var result = _listService.DeleteListName(cardId);
+        //    if (!result)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    return NoContent();
+        //}
     }
 }

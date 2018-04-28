@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Pgs.Kanban.Domain.Dtos
 {
-    public class DeleteListNameDto
+    public class DeleteCardDto
     {
-        public int ListId { get; set; }
-        public int BoardId { get; set; }
+        public int CardId { get; set; }
     }
 }

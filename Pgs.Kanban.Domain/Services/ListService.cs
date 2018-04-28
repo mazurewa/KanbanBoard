@@ -58,23 +58,16 @@ namespace Pgs.Kanban.Domain.Services
             return result > 0;
         }
 
-        public bool DeleteListName(DeleteListNameDto deleteListNameDto)
+        public bool DeleteListName(DeleteListDto deleteListNameDto)
         {
-            var board = _context.Boards.SingleOrDefault(x => x.Id == deleteListNameDto.BoardId);
-
-            if (board == null)
-            {
-                return false;
-            }
-
-            var list = _context.Lists.SingleOrDefault(x => x.Id == deleteListNameDto.ListId);
+           var list = _context.Lists.SingleOrDefault(x => x.Id == deleteListNameDto.ListId);
 
             if (list == null)
             {
                 return false;
             }
 
-            board.Lists.Remove(list);
+            _context.Lists.Remove(list);
 
             var result = _context.SaveChanges();
             return result > 0;

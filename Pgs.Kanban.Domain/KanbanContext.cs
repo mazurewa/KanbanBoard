@@ -14,5 +14,7 @@ namespace Pgs.Kanban.Domain
 
         public DbSet<List> Lists { get; set; }
 
+        public DbSet<Card> Cards { get; set; }
+
     }
 }

@@ -31,8 +31,25 @@ class Board extends React.Component {
         });
     }
 
+    deleteList = (id) => {
+        if (window.confirm("Are you sure?")) {
+            axios.delete(`${BASE_URL}/list`, {data: {listId: id, boardId: this.state.boardId}})
+            .then(() => {
+                this.setState(prevState => {
+                    return{
+                        boardData: prevState.boardData.filter(x => x.listId !== id)
+                    }
+                })
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        }
+    }
+
     renderList = () => {
-        return(this.state.boardData.map((list) => <List key={list.id} boardId={this.state.boardId} listId={list.id} listName={list.name} cards={[]}/>))
+        return(this.state.boardData.map((list) => <List key={list.id} boardId={this.state.boardId} listId={list.id} 
+        listName={list.name} cards={list.cards} onDeleteList={this.deleteList}/>))
     }
 
     onClickList = () => {
