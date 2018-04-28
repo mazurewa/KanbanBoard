@@ -25,7 +25,7 @@ export default class List extends React.Component {
             axios.delete(`${BASE_URL}/card`, {data: {cardId: id, listId: this.state.listId}})
             .then(() => {
                 console.log("Successfully deleted card!");
-                this.setState({listData: this.state.listData.filter(x => x.cardId != id)})
+                this.setState({listData: this.state.listData.filter(x => x.cardId !== id)})
             })
             .catch((error) => {
                 console.log(error);
