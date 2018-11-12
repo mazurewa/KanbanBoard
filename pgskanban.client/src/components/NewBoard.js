@@ -1,37 +1,41 @@
 import React from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
-import {BASE_URL} from '../constants';
 
-class NewBoard extends React.Component {
-    constructor(){
+export class NewBoard extends React.Component {
+
+    constructor() {
         super();
         this.state = {
-            name: ''
-        };
+            boardName: '',
+        }
     }
 
     onChange = (event) => {
-        this.setState({name: event.target.value})
-    }
+        this.setState({[event.target.name]: event.target.value})
+    };
 
-    addBoard = () => {
-        axios.post(BASE_URL + '/board', {name: this.state.name}).then(() => {
+    addNewBoard = () => {
+        axios.post('http://localhost:56265/api/board', {name : this.state.boardName}).then(() => {
             this.props.history.push('/');
-        })
-        .catch((err) => {
-            console.log(err);
         });
-    }
+    };
 
-    render(){
-        return(
-            <div>
-            <input onChange={this.onChange} value={this.state.name} placeholder="Add new board name" className="form-control"/>
-            <button onClick={this.addBoard} disabled={!this.state.name} className="btn btn-primary">Add</button>
-        </div>
-        );     
+    render() {
+        return (
+            <div className="p-3">
+                <h1>Add new board</h1>
+                <div className="row">
+                    <div className="col-6 offset-2">
+                        <input name="boardName" onChange={this.onChange} value={this.state.boardName} className="form-control"/>
+                    </div>
+                    <div className="col-2">
+                        <button onClick={this.addNewBoard} disabled={!this.state.boardName} className="btn btn-success">Add Board</button>
+                    </div>
+                </div>
+            </div>
+        )
     }
 }
 
-export default withRouter(NewBoard);
+export default withRouter(NewBoard)
