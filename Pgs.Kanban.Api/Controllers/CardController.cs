@@ -1,27 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pgs.Kanban.Domain.Dtos;
-using Pgs.Kanban.Domain.Services;
+using Pgs.Kanban.Domain.Services.Interfaces;
 
 namespace Pgs.Kanban.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Card")]
     public class CardController : Controller
     {
-         private readonly CardService _cardService;
+        private readonly ICardService _cardService;
 
-        public CardController()
+        public CardController(ICardService cardService)
         {
-            _cardService = new CardService();
+            _cardService = cardService;
         }
 
         [HttpPost]
         public IActionResult AddCard([FromBody] AddCardDto addCardDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
             var result = _cardService.AddCard(addCardDto);
 
             if (result == null)
@@ -33,14 +28,10 @@ namespace Pgs.Kanban.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult EditCardName([FromBody] EditCardDto editCardDto)
+        public IActionResult EditCard([FromBody] EditCardDto editCardDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
             var result = _cardService.EditCard(editCardDto);
+
             if (!result)
             {
                 return BadRequest();
@@ -49,15 +40,11 @@ namespace Pgs.Kanban.Api.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
-        public IActionResult DeleteCard([FromBody] DeleteCardDto deleteCardDto)
+        [HttpDelete("{id:int}")]
+        public IActionResult DeleteCard(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+            var result = _cardService.DeleteCard(id);
 
-            var result = _cardService.DeleteCard(deleteCardDto);
             if (!result)
             {
                 return BadRequest();
@@ -65,5 +52,5 @@ namespace Pgs.Kanban.Api.Controllers
 
             return NoContent();
         }
-    }
+    }    
 }

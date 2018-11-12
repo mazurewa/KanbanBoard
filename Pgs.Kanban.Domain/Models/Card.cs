@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace Pgs.Kanban.Domain.Models
 {
@@ -11,9 +14,6 @@ namespace Pgs.Kanban.Domain.Models
 
         public virtual List List { get; set; }
 
-        [Required]
         public string Name { get; set; }
-
-        public string Description { get; set; }
     }
 }

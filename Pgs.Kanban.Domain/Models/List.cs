@@ -16,7 +16,6 @@ namespace Pgs.Kanban.Domain.Models
 
         [Required]
         public string Name { get; set; }
-
-        public virtual ICollection<Card> Cards { get; set; }
+        public ICollection<Card> Cards { get; set; }
     }
 }

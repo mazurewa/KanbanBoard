@@ -1,16 +1,21 @@
 ﻿using System.Linq;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Pgs.Kanban.Domain.Dtos;
 using Pgs.Kanban.Domain.Models;
+using Pgs.Kanban.Domain.Services.Interfaces;
 
 namespace Pgs.Kanban.Domain.Services
 {
-    public class ListService
+    public class ListService : IListService
     {
         private readonly KanbanContext _context;
+        private readonly IMapper _mapper;
 
-        public ListService()
+        public ListService(KanbanContext context, IMapper mapper)
         {
-            _context = new KanbanContext();
+            _context = context;
+            _mapper = mapper;
         }
 
         public ListDto AddList(AddListDto addListDto)
@@ -29,6 +34,47 @@ namespace Pgs.Kanban.Domain.Services
             _context.Lists.Add(list);
             _context.SaveChanges();
 
+            return ConstructListDto(list);
+        }
+
+        public bool EditList(EditListDto editListDto, int id)
+        {
+            if (!_context.Boards.Any(x => x.Id == editListDto.BoardId))
+            {
+                return false;
+            }
+
+            var list = _context.Lists.SingleOrDefault(x => x.Id == id);
+
+            if (list == null || list.BoardId != editListDto.BoardId)
+            {
+                return false;
+            }
+
+            if (list.Name == editListDto.Name)
+            {
+                return true;
+            }
+
+            list.Name = editListDto.Name;
+            return _context.SaveChanges() > 0;
+        }
+
+        public bool DeleteList(int id)
+        {
+            var list = _context.Lists.SingleOrDefault(x => x.Id == id);
+
+            if (list == null)
+            {
+                return false;
+            }
+
+            _context.Lists.Remove(list);
+            return _context.SaveChanges() > 0;
+        }
+
+        private ListDto ConstructListDto(List list)
+        {
             var listDto = new ListDto
             {
                 Id = list.Id,
@@ -37,40 +83,6 @@ namespace Pgs.Kanban.Domain.Services
             };
 
             return listDto;
-        }
-
-        public bool EditListName(EditListNameDto editListNameDto)
-        {
-            if (!_context.Boards.Any(x => x.Id == editListNameDto.BoardId))
-            {
-                return false;
-            }
-
-            var list = _context.Lists.SingleOrDefault(x => x.Id == editListNameDto.ListId);
-
-            if (list == null || list.Name == editListNameDto.Name)
-            {
-                return false;
-            }
-
-            list.Name = editListNameDto.Name;
-            var result = _context.SaveChanges();
-            return result > 0;
-        }
-
-        public bool DeleteListName(DeleteListDto deleteListNameDto)
-        {
-           var list = _context.Lists.SingleOrDefault(x => x.Id == deleteListNameDto.ListId);
-
-            if (list == null)
-            {
-                return false;
-            }
-
-            _context.Lists.Remove(list);
-
-            var result = _context.SaveChanges();
-            return result > 0;
         }
     }
 }

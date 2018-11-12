@@ -1,25 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Pgs.Kanban.Domain.Dtos;
-using Pgs.Kanban.Domain.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Pgs.Kanban.Domain.Dtos;
+using Pgs.Kanban.Domain.Models;
+using Pgs.Kanban.Domain.Services.Interfaces;
 
 namespace Pgs.Kanban.Domain.Services
 {
-    public class CardService
+    public class CardService : ICardService
     {
         private readonly KanbanContext _context;
+        private readonly IMapper _mapper;
 
-        public CardService()
+        public CardService(KanbanContext context, IMapper mapper)
         {
-            _context = new KanbanContext();
+            _context = context;
+            _mapper = mapper;
         }
 
         public CardDto AddCard(AddCardDto addCardDto)
         {
-            if (!_context.Lists.Any(x => x.Id == addCardDto.ListId))
+            if (!ListExists(addCardDto.ListId))
             {
                 return null;
             }
@@ -27,50 +31,40 @@ namespace Pgs.Kanban.Domain.Services
             var card = new Card
             {
                 Name = addCardDto.Name,
-                ListId = addCardDto.ListId,
-                Description = ""
+                ListId = addCardDto.ListId
             };
 
             _context.Cards.Add(card);
-            var result = _context.SaveChanges();
+            var resultOfAdding = _context.SaveChanges();
 
-            if (result == 0)
+            if (resultOfAdding == 0)
             {
                 return null;
             }
 
-            var cardDto = new CardDto
-            {
-                Id = card.Id,
-                ListId = card.ListId,
-                Name = card.Name,
-                Description = ""
-            };
+            var cardDto = _mapper.Map<CardDto>(card);
 
             return cardDto;
         }
 
         public bool EditCard(EditCardDto editCardDto)
         {
-            var card = _context.Cards.SingleOrDefault(x => x.Id == editCardDto.CardId);
-
-            if (card == null || (card.Name == editCardDto.Name && card.Description == editCardDto.Description))
+            var card = GetCard(editCardDto.Id);
+            if (card == null)
             {
                 return false;
             }
 
             card.Name = editCardDto.Name;
-            card.Description = editCardDto.Description;
             _context.Entry(card).State = EntityState.Modified;
 
             var result = _context.SaveChanges();
             return result > 0;
         }
 
-        public bool DeleteCard(DeleteCardDto deleteCardDto)
+        public bool DeleteCard(int id)
         {
-            var card = GetCard(deleteCardDto.CardId);
-
+            var card = GetCard(id);
             if (card == null)
             {
                 return false;
@@ -81,9 +75,15 @@ namespace Pgs.Kanban.Domain.Services
             return result > 0;
         }
 
+        private bool ListExists(int id)
+        {
+            return _context.Lists.Any(x => x.Id == id);
+        }
+
         private Card GetCard(int id)
         {
-            return _context.Cards.SingleOrDefault(x => x.Id == id);
+            var list = _context.Cards.FirstOrDefault(x => x.Id == id);
+            return list;
         }
     }
 }

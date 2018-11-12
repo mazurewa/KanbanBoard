@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Pgs.Kanban.Domain.Models;
 
 namespace Pgs.Kanban.Domain.Dtos
 {
